@@ -119,6 +119,54 @@ class LocalNotificationService {
     log("tz: ${tz.local} : $currentTimeZone ");
   }
 
+  /// Show daily scheduled notification
+  static Future<void> showDAilyScheduledNotification() async {
+    tz.initializeTimeZones();
+    final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
+    NotificationDetails notificationDetails = const NotificationDetails(
+      android: AndroidNotificationDetails(
+        'channel_id_4',
+        'Daily Scheduled channel',
+        importance: Importance.max,
+        priority: Priority.high,
+      ),
+    );
+
+    var currentTime = tz.TZDateTime.now(tz.local);
+    // var scheduleTime = tz.TZDateTime(tz.local, 2024, 9, 1, 0, 25);
+    var scheduleTime = tz.TZDateTime(
+      tz.local,
+      currentTime.year,
+      currentTime.month,
+      currentTime.day,
+      0,
+    );
+    log("currentTime: $currentTime");
+    log("scheduleTime actual : $scheduleTime");
+
+    if (scheduleTime.isBefore(currentTime)) {
+      log("isBefore");
+      scheduleTime = scheduleTime.add(const Duration(days: 1));
+    }
+    log("scheduleTime after isBefore: $scheduleTime");
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      3,
+      "Daily Scheduled Notification",
+      "Body",
+      scheduleTime,
+      notificationDetails,
+      payload: "Daily Scheduled Notification",
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+
+    log("Daily Scheduled Notification Showed");
+    log("tz: ${tz.local} : $currentTimeZone ");
+  }
+
   /// Cancel/remove the notification with the specified id.
   static Future<void> cancelNotification({required int id}) async {
     await flutterLocalNotificationsPlugin.cancel(id);

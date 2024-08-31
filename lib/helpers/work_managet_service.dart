@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:local_notifications/helpers/local_notification_service.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -10,8 +12,8 @@ class WorkManagerService {
   static Future<void> taskRegister() async {
     await Workmanager().registerOneOffTask(
       // task run only once
-      "1",
-      "show simple notification",
+      "2",
+      "show daily notification",
     );
 
     // await Workmanager().registerPeriodicTask(
@@ -29,7 +31,8 @@ class WorkManagerService {
 @pragma('vm:entry-point')
 Future<void> taskAction() async {
   Workmanager().executeTask((taskName, inputData) async {
-    await LocalNotificationService.showBasicNotification();
+    log("Task: $taskName");
+    await LocalNotificationService.showDAilyScheduledNotification();
     return Future.value(true);
   });
 }
