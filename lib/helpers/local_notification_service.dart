@@ -42,13 +42,15 @@ class LocalNotificationService {
 
   /// Show Basic notification
   static Future<void> showBasicNotification() async {
-    NotificationDetails notificationDetails = const NotificationDetails(
+    NotificationDetails notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
         'channel_id_1',
         'Basic channel',
         importance: Importance
             .max, // to display the notification prominently with a full-screen intent
         priority: Priority.high,
+        sound: RawResourceAndroidNotificationSound(
+            'message.mp3'.split('.').first),
       ),
     );
     await flutterLocalNotificationsPlugin.show(
