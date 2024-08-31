@@ -10,17 +10,17 @@ class WorkManagerService {
   }
 
   static Future<void> taskRegister() async {
-    await Workmanager().registerOneOffTask(
-      // task run only once
-      "2",
-      "show daily notification",
-    );
+    // await Workmanager().registerOneOffTask(
+    //   // task run only once
+    //   "2",
+    //   "show daily notification",
+    // );
 
-    // await Workmanager().registerPeriodicTask(
-    //     // task run every minute
-    //     "2",
-    //     "show repeated notification",
-    //     frequency: const Duration(minutes: 15));
+    await Workmanager().registerPeriodicTask(
+        // task run every minute
+        "2",
+        "show repeated notification",
+        frequency: const Duration(minutes: 15));
   }
 
   static Future<void> taskCancel({required String uniqueName}) async {
