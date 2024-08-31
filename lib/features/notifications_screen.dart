@@ -1,8 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:local_notifications/features/notifications_screen_details.dart';
 import 'package:local_notifications/helpers/local_notification_service.dart';
 
-class NotificationsScreen extends StatelessWidget {
+class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
+
+  @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
+  @override
+  void initState() {
+    listenToNotifications();
+    super.initState();
+  }
+
+  void listenToNotifications() {
+    LocalNotificationService.streamController.stream.listen((event) {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return NotificationsScreenDetails(notificationResponse: event);
+        },
+      ));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

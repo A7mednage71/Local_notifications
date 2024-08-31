@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -9,10 +10,15 @@ class LocalNotificationService {
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  /// create stream connection
+  static StreamController<NotificationResponse> streamController =
+      StreamController();
+
   /// handle notification response
   static receiveNotificationResponse(
       NotificationResponse notificationResponse) {
-    log("ReceiveNotificationResponse: $notificationResponse");
+    streamController.add(notificationResponse);
+    log("Receive Notification Response");
   }
 
   /// Initialize the notification service
@@ -49,8 +55,8 @@ class LocalNotificationService {
         importance: Importance
             .max, // to display the notification prominently with a full-screen intent
         priority: Priority.high,
-        sound: RawResourceAndroidNotificationSound(
-            'message.mp3'.split('.').first),
+        sound:
+            RawResourceAndroidNotificationSound('message.mp3'.split('.').first),
       ),
     );
     await flutterLocalNotificationsPlugin.show(
@@ -58,6 +64,7 @@ class LocalNotificationService {
       "Basic Notification",
       "Body",
       notificationDetails,
+      payload: "Basic Notification",
     );
     log("Basic Notification Showed");
   }
@@ -79,6 +86,7 @@ class LocalNotificationService {
       "Body",
       RepeatInterval.everyMinute,
       notificationDetails,
+      payload: "Repeated Notification",
     );
     log("Repeated Notification Showed");
   }
@@ -104,6 +112,7 @@ class LocalNotificationService {
         // tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
         tz.TZDateTime(tz.local, 2024, 8, 31, 11, 45),
         notificationDetails,
+        payload: "Scheduled Notification",
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
     log("Scheduled Notification Showed");
