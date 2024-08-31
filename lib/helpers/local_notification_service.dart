@@ -1,6 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class LocalNotificationService {
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -78,9 +81,42 @@ class LocalNotificationService {
     log("Repeated Notification Showed");
   }
 
+  /// Show scheduled notification
+  static Future<void> showScheduledNotification() async {
+    tz.initializeTimeZones();
+    final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+    NotificationDetails notificationDetails = const NotificationDetails(
+      android: AndroidNotificationDetails(
+        'channel_id_3',
+        'Scheduled channel',
+        importance: Importance
+            .max, // to display the notification prominently with a full-screen intent
+        priority: Priority.high,
+      ),
+    );
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        2,
+        "Scheduled Notification",
+        "Body",
+        // tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+        tz.TZDateTime(tz.local, 2024, 8, 31, 11, 45),
+        notificationDetails,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
+    log("Scheduled Notification Showed");
+    log("tz: ${tz.local} : $currentTimeZone ");
+  }
+
   /// Cancel/remove the notification with the specified id.
   static Future<void> cancelNotification({required int id}) async {
     await flutterLocalNotificationsPlugin.cancel(id);
     log("Cancel Notification with id: $id");
+  }
+
+  /// Cancel/remove all the notifications
+  static Future<void> cancelAllNotification() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+    log("Cancel All Notification");
   }
 }

@@ -43,6 +43,21 @@ class NotificationsScreen extends StatelessWidget {
               await LocalNotificationService.showRepeatedNotification();
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.notifications),
+            title: const Text('Scheduled Notification'),
+            trailing: IconButton(
+                onPressed: () async {
+                  await LocalNotificationService.cancelNotification(id: 1);
+                },
+                icon: const Icon(
+                  Icons.cancel,
+                  color: Colors.red,
+                )),
+            onTap: () async {
+              await LocalNotificationService.showScheduledNotification();
+            },
+          ),
         ],
       ),
     );
